@@ -13,10 +13,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(helmet());
-app.use(mongoSanitize());
 app.use(bodyParser.json({ limit: '1kb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '1kb' }));
+app.use(helmet());
+app.use(mongoSanitize());
 app.use(xss());
 
 app.use('/api/v1/users', usersRouter);
