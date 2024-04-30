@@ -23,10 +23,7 @@ export const getAllUsers = async (req, res, next) => {
             data: users
         });
     } catch (error) {
-        return res.status(500).json({
-            status: 'error',
-            message: 'Something went wrong.'
-        });
+        return next(new AppError('Something went wrong'));
     }
 };
 
@@ -47,7 +44,10 @@ export const getUserById = async (req, res, next) => {
         });
     } catch (error) {
         if (error.name === 'CastError') {
-            return next(new AppError(`Invalid ${error.path}:${error.value}`));
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
         }
     }
 };
@@ -62,7 +62,10 @@ export const currentUser = async (req, res, next) => {
         });
     } catch (error) {
         if (error.name === 'CastError') {
-            return next(new AppError(`Invalid ${error.path}:${error.value}`));
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
         }
     }
 };
@@ -89,7 +92,10 @@ export const updateUser = async (req, res, next) => {
         });
     } catch (error) {
         if (error.name === 'CastError') {
-            return next(new AppError(`Invalid ${error.path}:${error.value}`));
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
         }
     }
 };
@@ -110,7 +116,10 @@ export const deleteUser = async (req, res, next) => {
         });
     } catch (error) {
         if (error.name === 'CastError') {
-            return next(new AppError(`Invalid ${error.path}:${error.value}`));
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
         }
     }
 };

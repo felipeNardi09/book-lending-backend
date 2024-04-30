@@ -32,7 +32,7 @@ export const signUp = async (req, res, next) => {
                 (err) => err.message
             );
 
-            next(new AppError(`Invalid input data: ${errors.join(' ')}`));
+            next(new AppError(`Invalid input data: ${errors.join(' ')}`), 400);
         }
 
         if (error.code === 11000) {

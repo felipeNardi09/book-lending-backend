@@ -30,8 +30,8 @@ export const createLoan = async (req, res, next) => {
         ) {
             return next(
                 new AppError(
-                    'You need to return the current book to borrow another',
-                    401
+                    'You need to return the current book to borrow another one',
+                    403
                 )
             );
         }
@@ -66,13 +66,14 @@ export const createLoan = async (req, res, next) => {
                 (err) => err.message
             );
 
-            next(new AppError(`Invalid input data: ${errors.join(' ')}`));
+            next(new AppError(`Invalid input data: ${errors.join(' ')}`), 400);
         }
 
         if (error.code === 11000) {
             return next(
                 new AppError(
-                    `Duplicate field: ${Object.keys(error.keyValue)}. ${error.keyValue.title} already exists.`
+                    `Duplicate field: ${Object.keys(error.keyValue)}. ${error.keyValue.title} already exists.`,
+                    400
                 )
             );
         }
@@ -94,9 +95,13 @@ export const retrieveBookFromLoan = async (req, res, next) => {
             session
         );
 
-        //Nao sei como lidar com este erro; No caso, o livro foi deletado pelo admin e nao existe mais para a devolucao;
         if (!book) {
-            return next(new AppError('Something went wrong.'));
+            return next(
+                new AppError(
+                    'This book is not available anymore, please contact us',
+                    404
+                )
+            );
         }
 
         book.numberOfCopies += 1;
@@ -114,8 +119,7 @@ export const retrieveBookFromLoan = async (req, res, next) => {
         });
     } catch (error) {
         await session.abortTransaction();
-        // eslint-disable-next-line no-console
-        console.error(error);
+        return next(new AppError(error.message));
     }
 };
 export const getLoansByUser = async (req, res, next) => {
@@ -136,12 +140,12 @@ export const getLoansByUser = async (req, res, next) => {
             data: loans.length ? loans : 'There are no loans yet.'
         });
     } catch (error) {
-        /*    if (error.name === 'CastError') {
-            return next(new AppError(`Invalid ${error.path}:${error.value}`));
+        if (error.name === 'CastError') {
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
         }
-    } */
-
-        console.log(error);
     }
 };
 
@@ -156,7 +160,10 @@ export const getAllLoans = async (req, res, next) => {
         });
     } catch (error) {
         if (error.name === 'CastError') {
-            return next(new AppError(`Invalid ${error.path}:${error.value}`));
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
         }
     }
 };
@@ -179,7 +186,10 @@ export const getLoanById = async (req, res, next) => {
         });
     } catch (error) {
         if (error.name === 'CastError') {
-            return next(new AppError(`Invalid ${error.path}:${error.value}`));
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
         }
     }
 };
@@ -202,7 +212,10 @@ export const updateLoan = async (req, res, next) => {
         });
     } catch (error) {
         if (error.name === 'CastError') {
-            return next(new AppError(`Invalid ${error.path}:${error.value}`));
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
         }
     }
 };
@@ -225,7 +238,10 @@ export const deleteLoan = async (req, res, next) => {
         });
     } catch (error) {
         if (error.name === 'CastError') {
-            return next(new AppError(`Invalid ${error.path}:${error.value}`));
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
         }
     }
 };
