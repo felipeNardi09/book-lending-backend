@@ -7,7 +7,6 @@ The project is being developed for learning and portfolio purposes. It was built
 Some features yet to be implemented: images upload and some adjustments.
 
 ### Installing
-To install all the dependencies of the project run:
 - `npm install`
 - `yarn`
 
