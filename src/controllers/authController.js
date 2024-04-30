@@ -104,7 +104,11 @@ export const logout = async (req, res, next) => {
             status: 'Success',
             message: 'You logged out'
         });
-    } catch (error) {}
+    } catch (error) {
+        return res.status(400).json({
+            error: err.message
+        });
+    }
 };
 
 export const tokenValidation = async (req, res, next) => {
@@ -190,7 +194,7 @@ export const forgotPassword = async (req, res, next) => {
             resetPasswordToken
         );
 
-        res.status(200).json({
+        res.status(204).json({
             status: 'Success',
             message: 'An update password e-mail was sent to you.'
         });
@@ -226,7 +230,7 @@ export const updatePassword = async (req, res, next) => {
 
     await user.save({ validateBeforeSave: false });
 
-    res.status(200).json({
+    res.status(204).json({
         status: 'Success',
         message: 'Your password has been updated.'
     });
