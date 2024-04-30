@@ -7,9 +7,10 @@ The project is being developed for learning and portfolio purposes. It was built
 Some features yet to be implemented: images upload and some adjustments.
 
 ### Installing
+Install the project dependencies:
  `npm install`
- or
- `yarn`
+   or
+  `yarn`
 
 ### Running the project
 Create and account or log in to your MongoDB account([MongoDB](https://www.mongodb.com/)). Create a New Project and a new Database. Connect the project to the database to perform all the API actions.
