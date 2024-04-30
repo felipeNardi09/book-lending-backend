@@ -15,4 +15,4 @@ Sign up or log in to your MongoDB account([MongoDB](https://www.mongodb.com/)). 
 To test routes that require e-mails you can use [Mailtrap](https://mailtrap.io/).
 
 ### Documentation
-Read the docs:(https://documenter.getpostman.com/view/25724546/2sA3JDfjXs)
+Read the docs: https://documenter.getpostman.com/view/25724546/2sA3JDfjXs
