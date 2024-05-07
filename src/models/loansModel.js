@@ -22,6 +22,10 @@ export const loansSchema = new mongoose.Schema(
         },
         returnDate: {
             type: Date
+        },
+        retrieveDate: {
+            type: Schema.Types.Mixed,
+            default: ''
         }
     },
     { timestamps: true }

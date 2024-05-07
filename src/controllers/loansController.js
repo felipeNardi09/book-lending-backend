@@ -48,6 +48,7 @@ export const createLoan = async (req, res, next) => {
 
         req.user.currentBorrowedBookId = book.id;
         req.user._loanId.push(loan.id);
+        req.user._currentLoanId = loan.id;
 
         await book.save({ validateBeforeSave: false, session });
         await req.user.save({ validateBeforeSave: false, session });
@@ -82,6 +83,7 @@ export const createLoan = async (req, res, next) => {
 
 export const retrieveBookFromLoan = async (req, res, next) => {
     const { currentBorrowedBookId } = req.user;
+    const { id } = req.params;
 
     if (!currentBorrowedBookId) {
         return next(new AppError('You have no borrowed books.', 404));
@@ -104,8 +106,19 @@ export const retrieveBookFromLoan = async (req, res, next) => {
             );
         }
 
+        const loan = await Loan.findByIdAndUpdate(
+            id,
+            { hasBeenReturned: true, retrieveDate: new Date() },
+            {
+                new: true
+            }
+        );
+
+        if (!loan) return next(new AppError('No loan was found', 404));
+
         book.numberOfCopies += 1;
         req.user.currentBorrowedBookId = '';
+        req.user._currentLoanId = '';
 
         await book.save({ validateBeforeSave: false, session });
         await req.user.save({ session });
@@ -126,7 +139,9 @@ export const getLoansByUser = async (req, res, next) => {
     const { id } = req.user;
 
     try {
-        const loans = await Loan.find({ _borrowerId: id });
+        const loans = await Loan.find({ _borrowerId: id }).sort({
+            createdAt: -1
+        });
 
         if (!loans) {
             return next(

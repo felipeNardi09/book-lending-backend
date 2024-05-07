@@ -24,6 +24,6 @@ loansRouter.get('/user/loans', getLoansByUser);
 loansRouter.patch('/update-loan/:id', updateLoan);
 loansRouter.delete('/delete-loan/:id', deleteLoan);
 
-loansRouter.patch('/retrieve-book', retrieveBookFromLoan);
+loansRouter.patch('/retrieve-book/:id', retrieveBookFromLoan);
 
 export default loansRouter;

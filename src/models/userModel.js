@@ -60,6 +60,11 @@ const userSchema = new mongoose.Schema(
             type: Schema.Types.Mixed,
             ref: 'Book',
             default: ''
+        },
+        _currentLoanId: {
+            type: Schema.Types.Mixed,
+            ref: 'Loan',
+            default: ''
         }
     },
     { timestamps: true }
