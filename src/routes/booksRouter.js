@@ -6,17 +6,19 @@ import {
     updateBook,
     deleteBook
 } from '../controllers/booksControllers.js';
-import { tokenValidation } from '../controllers/authController.js';
+import { tokenValidation } from '../middlewares/tokenValidation.js';
+import { restrictTo } from '../middlewares/restrictTo.js';
 
 const booksRouter = Router();
-
-booksRouter.post('/create-book', createBook);
 
 booksRouter.get('/', getAllBooks);
 booksRouter.get('/:id', getBookById);
 
-booksRouter.patch('/:id', tokenValidation, updateBook);
-booksRouter.delete('/delete-book/:id', tokenValidation, deleteBook);
+booksRouter.use(tokenValidation, restrictTo);
+
+booksRouter.post('/create-book', createBook);
+booksRouter.patch('/:id', updateBook);
+booksRouter.delete('/delete-book/:id', deleteBook);
 
 //delete
 

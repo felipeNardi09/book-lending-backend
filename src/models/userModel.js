@@ -32,10 +32,10 @@ const userSchema = new mongoose.Schema(
         changedPasswordAt: {
             type: Date
         },
-        role: {
-            type: String,
-            enum: ['admin', 'user'],
-            select: false
+        isAdmin: {
+            type: Boolean,
+            select: false,
+            default: false
         },
         session: {
             type: String,

@@ -4,7 +4,7 @@ import AppError from '../utils/appError.js';
 import sendEmail from '../utils/sendEmail.js';
 
 export const signUp = async (req, res, next) => {
-    const { email, name, password, confirmPassword, role } = req.body;
+    const { email, name, password, confirmPassword, isAdmin } = req.body;
 
     try {
         const user = await User.create({
@@ -12,7 +12,7 @@ export const signUp = async (req, res, next) => {
             name,
             password,
             confirmPassword,
-            role
+            isAdmin
         });
 
         const token = await user.generateJWToken(user.id);
@@ -32,7 +32,10 @@ export const signUp = async (req, res, next) => {
                 (err) => err.message
             );
 
-            next(new AppError(`Invalid input data: ${errors.join(' ')}`), 400);
+            return next(
+                new AppError(`Invalid input data: ${errors.join(' ')}`),
+                400
+            );
         }
 
         if (error.code === 11000) {
@@ -109,67 +112,6 @@ export const logout = async (req, res, next) => {
             error: err.message
         });
     }
-};
-
-export const tokenValidation = async (req, res, next) => {
-    let token;
-
-    if (
-        !req.headers.authorization ||
-        !req.headers.authorization.startsWith('Bearer')
-    ) {
-        return next(new AppError('Login to perform this action.', 401));
-    } else {
-        token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
-        return next(
-            new AppError(
-                'You are not logged in! Please log in to get access.',
-                401
-            )
-        );
-    }
-
-    const decoded = await jwt.verify(
-        token,
-        process.env.JWT_SECRET_KEY,
-        function (error, decoded) {
-            if (error) {
-                if (error.name === 'TokenExpiredError') {
-                    return next(new AppError('Token expired', 401));
-                }
-            } else {
-                return decoded;
-            }
-        }
-    );
-
-    if (!decoded) {
-        return next(new AppError('Invalid token', 401));
-    }
-
-    const { iat, id } = decoded;
-
-    const user = await User.findById(id);
-
-    if (!user) {
-        return next(new AppError('This user no longer exists.', 401));
-    }
-
-    if (await user.chagedPasswordAfter(iat)) {
-        return next(
-            new AppError(
-                'Your password has changed, plase log in to perform this action.',
-                401
-            )
-        );
-    }
-
-    req.user = user;
-
-    next();
 };
 
 export const forgotPassword = async (req, res, next) => {

@@ -54,11 +54,9 @@ export const getUserById = async (req, res, next) => {
 
 export const currentUser = async (req, res, next) => {
     try {
-        const user = await User.findById(req.user.id).select('+isActive');
-
         return res.status(200).json({
             status: 'Success',
-            data: user
+            data: req.user
         });
     } catch (error) {
         if (error.name === 'CastError') {

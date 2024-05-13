@@ -13,7 +13,7 @@ const booksSchema = new mongoose.Schema(
         },
         author: {
             type: String,
-            required: [true, 'The book needs a autor.']
+            required: [true, 'The book needs an autor.']
         },
         synopsis: {
             type: String,

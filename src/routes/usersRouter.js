@@ -2,7 +2,6 @@ import { Router } from 'express';
 import {
     signUp,
     login,
-    tokenValidation,
     forgotPassword,
     updatePassword,
     logout
@@ -14,6 +13,8 @@ import {
     getUserById,
     updateUser
 } from '../controllers/usersController.js';
+import { tokenValidation } from '../middlewares/tokenValidation.js';
+import { restrictTo } from '../middlewares/restrictTo.js';
 
 const usersRouter = Router();
 
@@ -24,14 +25,12 @@ usersRouter.post('/forgot-password', forgotPassword);
 usersRouter.patch('/update-password/:token', updatePassword);
 
 usersRouter.use(tokenValidation);
-
-usersRouter.get('/', getAllUsers);
-usersRouter.get('/user/:id', getUserById);
-
 usersRouter.get('/current-user', currentUser);
-
 usersRouter.patch('/update-user', updateUser);
 usersRouter.patch('/delete-user', deleteUser);
 usersRouter.patch('/log-out', logout);
+
+usersRouter.get('/', restrictTo, getAllUsers);
+usersRouter.get('/user/:id', restrictTo, getUserById);
 
 export default usersRouter;

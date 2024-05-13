@@ -152,7 +152,7 @@ export const getLoansByUser = async (req, res, next) => {
         res.status(200).json({
             status: 'Success',
             total: loans.length,
-            data: loans.length ? loans : 'There are no loans yet.'
+            data: loans
         });
     } catch (error) {
         if (error.name === 'CastError') {
