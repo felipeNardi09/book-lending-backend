@@ -1,3 +1,5 @@
+import AppError from '../utils/appError.js';
+
 export const restrictTo = (req, res, next) => {
     if (req.user.role !== 'admin') {
         return next(

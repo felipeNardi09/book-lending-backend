@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { User } from '../models/userModel.js';
+import AppError from '../utils/appError.js';
 
 export const tokenValidation = async (req, res, next) => {
     let token;

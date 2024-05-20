@@ -4,7 +4,7 @@ import AppError from '../utils/appError.js';
 import sendEmail from '../utils/sendEmail.js';
 
 export const signUp = async (req, res, next) => {
-    const { email, name, password, confirmPassword, isAdmin } = req.body;
+    const { email, name, password, confirmPassword, role } = req.body;
 
     try {
         const user = await User.create({
@@ -12,7 +12,7 @@ export const signUp = async (req, res, next) => {
             name,
             password,
             confirmPassword,
-            isAdmin
+            role
         });
 
         const token = await user.generateJWToken(user.id);
@@ -78,6 +78,7 @@ export const login = async (req, res, next) => {
                     user: user._id,
                     email: user.email,
                     name: user.name,
+                    role: user.role,
                     session: user.session,
                     currentBorrowedBookId: user.currentBorrowedBookId
                 },
