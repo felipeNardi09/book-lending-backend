@@ -11,7 +11,7 @@ const filterObj = (obj, ...allowedFields) => {
 
 export const getAllUsers = async (req, res, next) => {
     try {
-        const users = await User.find({ isActive: { $ne: false } });
+        const users = await User.find();
 
         if (!users.length) {
             return next(
@@ -108,10 +108,75 @@ export const deleteUser = async (req, res, next) => {
             }
         );
 
-        res.status(204).json({
-            status: 'Success',
-            message: 'User has been deleted.'
-        });
+        res.status(200).json({ user: req.user });
+    } catch (error) {
+        if (error.name === 'CastError') {
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
+        }
+    }
+};
+
+export const reactivateAccount = async (req, res, next) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email }).select('+password');
+
+        if (!user || !(await user.verifyPassword(password, user.password)))
+            return next(
+                new AppError(
+                    'There is no user with provided login and/or password.',
+                    404
+                )
+            );
+
+        if (user.isActive)
+            return next(new AppError('User is already active', 403));
+
+        await User.findByIdAndUpdate(
+            user._id,
+            { isActive: true },
+            { new: true }
+        );
+
+        res.status(200).json({ user });
+    } catch (error) {
+        if (error.name === 'CastError') {
+            return next(
+                new AppError(`Invalid ${error.path}:${error.value}`),
+                400
+            );
+        }
+    }
+};
+
+export const deleteUserById = async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id);
+
+        if (!user)
+            return next(new AppError('There is no user with provided id', 404));
+
+        if (user.currentBorrowedBookId)
+            return next(
+                new AppError(
+                    'You can not delete a user before he returns the book',
+                    403
+                )
+            );
+
+        await User.findByIdAndUpdate(
+            user._id,
+            { isActive: false },
+            { new: true }
+        );
+
+        res.status(200).json({ user });
     } catch (error) {
         if (error.name === 'CastError') {
             return next(

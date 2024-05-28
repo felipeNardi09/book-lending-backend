@@ -40,7 +40,9 @@ export const signUp = async (req, res, next) => {
 
         if (error.code === 11000) {
             return next(
-                new AppError(`${error.keyValue.email} already exists.`)
+                new AppError(
+                    `${error.keyValue.email} already exists. If you deleted your account try reactivating it.`
+                )
             );
         }
     }
@@ -60,6 +62,14 @@ export const login = async (req, res, next) => {
                 new AppError(
                     'There is no user with provided login and/or password.',
                     404
+                )
+            );
+
+        if (!user.isActive)
+            return next(
+                new AppError(
+                    'Your account is inactive, reactivate it to use the app',
+                    401
                 )
             );
 

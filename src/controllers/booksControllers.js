@@ -117,10 +117,7 @@ export const deleteBook = async (req, res, next) => {
             );
         }
 
-        res.status(204).json({
-            status: 'Sucess',
-            message: 'The book has been deleted.'
-        });
+        res.status(204);
     } catch (error) {
         if (error.name === 'CastError') {
             return next(

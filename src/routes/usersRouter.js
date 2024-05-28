@@ -11,7 +11,9 @@ import {
     getAllUsers,
     currentUser,
     getUserById,
-    updateUser
+    updateUser,
+    deleteUserById,
+    reactivateAccount
 } from '../controllers/usersController.js';
 import { tokenValidation } from '../middlewares/tokenValidation.js';
 import { restrictTo } from '../middlewares/restrictTo.js';
@@ -23,6 +25,7 @@ usersRouter.post('/login', login);
 
 usersRouter.post('/forgot-password', forgotPassword);
 usersRouter.patch('/update-password/:token', updatePassword);
+usersRouter.patch('/reactivate-account', reactivateAccount);
 
 usersRouter.use(tokenValidation);
 usersRouter.get('/current-user', currentUser);
@@ -30,7 +33,9 @@ usersRouter.patch('/update-user', updateUser);
 usersRouter.patch('/delete-user', deleteUser);
 usersRouter.patch('/log-out', logout);
 
-usersRouter.get('/', restrictTo, getAllUsers);
-usersRouter.get('/user/:id', restrictTo, getUserById);
+usersRouter.use(restrictTo);
+usersRouter.patch('/delete-by-id/:id', deleteUserById);
+usersRouter.get('/', getAllUsers);
+usersRouter.get('/user/:id', getUserById);
 
 export default usersRouter;
